@@ -86,6 +86,7 @@ export const Wrapper = styled.div`
       cursor: pointer;
       font-weight: 400;
       word-spacing: 30px;
+      min-width: 140px;
     }
 
     button:hover {

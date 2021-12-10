@@ -1,10 +1,10 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
 import { TuringMachine, TuringMachineProps } from './components'
-import { Wrapper, GlobalStyle } from '../styles'
+import { Wrapper, GlobalStyle } from './styles'
 
 const defaultState = {
   m: '',
-  q: '',
+  Q: '',
   turingMachines: [
     {
       current: '',
@@ -14,6 +14,11 @@ const defaultState = {
       direction: '',
     },
   ] as TuringMachineProps[],
+  alphaInput: '',
+  inputMachine: '',
+  finalState: '',
+  initialState: '',
+  output: '',
 }
 
 export default function App() {
@@ -66,6 +71,10 @@ export default function App() {
     setState((old) => ({ ...old, turingMachines: updatedTuringMachines }))
   }
 
+  const resetState = () => {
+    setState(defaultState)
+  }
+
   return (
     <Wrapper>
       <GlobalStyle />
@@ -77,69 +86,56 @@ export default function App() {
             <input
               type="text"
               placeholder="Q"
-              name="q"
+              name="Q"
               title="Conjunto de estados internos"
-              value={state.q}
+              value={state.Q}
               onChange={textChange}
             />
             <input
               type="text"
               placeholder="Γ"
-              name="entrada"
+              name="alphaInput"
               title="Alfabeto de entrada"
-              value={state.q}
-              onChange={textChange}
-            />
-            <input
-              type="text"
-              placeholder="Σ"
-              name="fita"
-              title="Alfabeto da fita"
-              value={state.q}
-              onChange={textChange}
-            />
-            <input
-              type="text"
-              placeholder="δ"
-              name="delta"
-              title="Função de Transição"
-              value={state.q}
+              value={state.alphaInput}
               onChange={textChange}
             />
             <input
               type="text"
               placeholder="q0"
-              name="q0"
+              name="initialState"
               title="Estado inicial"
-              value={state.q}
+              value={state.initialState}
               onChange={textChange}
             />
             <input
               type="text"
               placeholder="F"
-              name="F"
+              name="finalState"
               title="Conjunto de estados finais"
-              value={state.q}
+              value={state.finalState}
               onChange={textChange}
             />
             <input
               type="text"
-              placeholder="Entrada"
-              name="entrada"
-              title="Entrada"
-              value={state.q}
+              placeholder="Σ"
+              name="inputMachine"
+              title="Alfabeto da fita"
+              value={state.inputMachine}
               onChange={textChange}
             />
             <input
               type="text"
               placeholder="Saída"
-              name="saida"
+              name="output"
               title="Saída"
-              value={state.q}
+              value={state.output}
               onChange={textChange}
               disabled
             />
             <button type="submit">Processar</button>
+            <button type="submit" style={{ marginLeft: 10 }} onClick={resetState}>
+              Limpar
+            </button>
           </div>
           <div className="right-form">
             <h2 className="title">Máquina de Turing</h2>
