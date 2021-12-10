@@ -18,6 +18,7 @@ const defaultState = {
   inputMachine: '',
   finalState: '',
   initialState: '',
+  blank: '∅',
   output: '',
 }
 
@@ -32,10 +33,13 @@ export default function App({ turingMachine }: Props) {
     e.preventDefault()
     try {
       const output = await turingMachine.resolve({
-        final: state.finalState,
+        final: state.finalState.split(',').map((e) => e.trim()),
         initial: state.initialState,
         inputMachine: state.inputMachine,
         turingMachines: state.turingMachines,
+        blank: state.blank,
+        Q: state.Q.split(',').map((e) => e.trim()),
+        alphaInput: state.alphaInput.split(',').map((e) => e.trim()),
       })
       setState((old) => ({ ...old, output }))
     } catch (err: any) {
@@ -104,12 +108,21 @@ export default function App({ turingMachine }: Props) {
               value={state.Q}
               onChange={textChange}
             />
+
             <input
               type="text"
               placeholder="Γ"
               name="alphaInput"
               title="Alfabeto de entrada"
               value={state.alphaInput}
+              onChange={textChange}
+            />
+            <input
+              type="text"
+              placeholder="Γ"
+              name="blank"
+              title="Carácter Branco"
+              value={state.blank}
               onChange={textChange}
             />
             <input
@@ -146,12 +159,12 @@ export default function App({ turingMachine }: Props) {
               disabled
             />
             <button type="submit">Processar</button>
-            <button type="submit" style={{ marginLeft: 10 }} onClick={resetState}>
+            <button type="button" style={{ marginLeft: 10 }} onClick={resetState}>
               Limpar
             </button>
           </div>
           <div className="right-form">
-            <h2 className="title">Máquina de Turing</h2>
+            <h2 className="title">Máquina de Turing δ</h2>
             {state.turingMachines.map((e, index, array) => (
               <Fragment key={index}>
                 <TuringMachine turingMachine={e} textChange={textChangeTuringMachine(index)} />

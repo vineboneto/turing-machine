@@ -5,9 +5,12 @@ export interface TuringMachine {
 export namespace TuringMachine {
   export type Input = {
     initial: string
-    final: string
+    final: string[]
     inputMachine: string
     turingMachines: TuringMachine[]
+    Q: string[]
+    alphaInput: string[]
+    blank: string
   }
 
   export type TuringMachine = {
