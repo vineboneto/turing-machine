@@ -1,11 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './_app'
+import { makeApp } from './main/factories'
 import 'normalize.css'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-)
+const App = makeApp()
+
+ReactDOM.render(<React.StrictMode>{App}</React.StrictMode>, document.getElementById('root'))

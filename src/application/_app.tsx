@@ -1,14 +1,27 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
-import { Wrapper, GlobalStyle } from './styles'
+import { TuringMachine, TuringMachineProps } from './components'
+import { Wrapper, GlobalStyle } from '../styles'
+
+const defaultState = {
+  m: '',
+  q: '',
+  turingMachines: [
+    {
+      current: '',
+      next: '',
+      read: '',
+      write: '',
+      direction: '',
+    },
+  ] as TuringMachineProps[],
+}
 
 export default function App() {
-  const [state, setState] = useState({
-    m: '',
-    q: '',
-  })
+  const [state, setState] = useState(defaultState)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log(state.turingMachines)
   }
 
   const textChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -16,6 +29,41 @@ export default function App() {
       ...old,
       [e.target.name]: e.target.value,
     }))
+  }
+
+  const textChangeTuringMachine = (currentIndex: number) => (e: ChangeEvent<HTMLInputElement>) => {
+    const updatedTuringMachines = state.turingMachines.map((current, index) => {
+      if (index === currentIndex) {
+        return {
+          ...current,
+          [e.target.name]: e.target.value,
+        }
+      }
+      return current
+    })
+
+    setState((old) => ({ ...old, turingMachines: updatedTuringMachines }))
+  }
+
+  const addTuringMachine = () => {
+    setState((old) => ({
+      ...old,
+      turingMachines: [
+        ...old.turingMachines,
+        {
+          current: '',
+          direction: '',
+          next: '',
+          read: '',
+          write: '',
+        },
+      ],
+    }))
+  }
+
+  const removeTuringMachine = (currentIndex: number) => {
+    const updatedTuringMachines = state.turingMachines.filter((e, index) => index !== currentIndex)
+    setState((old) => ({ ...old, turingMachines: updatedTuringMachines }))
   }
 
   return (
@@ -95,40 +143,19 @@ export default function App() {
           </div>
           <div className="right-form">
             <h2 className="title">Máquina de Turing</h2>
-            <input
-              type="text"
-              placeholder="Atual"
-              name="atualEstado"
-              title="Atual Estado"
-              value={state.q}
-              onChange={textChange}
-            />
-            <input
-              type="text"
-              placeholder="Próximo"
-              name="proximoEstado"
-              title="Próximo estado"
-              value={state.q}
-              onChange={textChange}
-            />
-            <input type="text" placeholder="Lê" name="ler" title="Lê" value={state.q} onChange={textChange} />
-            <input
-              type="text"
-              placeholder="Escreve"
-              name="escreve"
-              title="Escreve"
-              value={state.q}
-              onChange={textChange}
-            />
-            <input
-              type="text"
-              placeholder="Direção"
-              name="direction"
-              title="Direção"
-              value={state.q}
-              onChange={textChange}
-            />
-            <button>+</button>
+            {state.turingMachines.map((e, index, array) => (
+              <>
+                <TuringMachine key={index} turingMachine={e} textChange={textChangeTuringMachine(index)} />
+                {index !== array.length - 1 && (
+                  <button type="button" onClick={() => removeTuringMachine(index)}>
+                    x
+                  </button>
+                )}
+              </>
+            ))}
+            <button type="button" onClick={addTuringMachine}>
+              +
+            </button>
           </div>
         </div>
       </form>
