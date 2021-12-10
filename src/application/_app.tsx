@@ -33,11 +33,11 @@ export default function App({ turingMachine }: Props) {
     e.preventDefault()
     try {
       const output = await turingMachine.resolve({
-        final: state.finalState.split(',').map((e) => e.trim()),
         initial: state.initialState,
         inputMachine: state.inputMachine,
         turingMachines: state.turingMachines,
         blank: state.blank,
+        final: state.finalState.split(',').map((e) => e.trim()),
         Q: state.Q.split(',').map((e) => e.trim()),
         alphaInput: state.alphaInput.split(',').map((e) => e.trim()),
       })

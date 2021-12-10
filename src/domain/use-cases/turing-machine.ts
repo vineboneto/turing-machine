@@ -14,7 +14,6 @@ export class TuringMachineUseCase implements Contract {
   async resolve(input: Contract.Input): Promise<string> {
     this.setting(input)
     this.validation()
-    console.log(this.i)
     for (this.i; this.i < this.inputMachine.length; this.i += this.incrementI) {
       const currentMachine = this.getMachineByLetter(this.inputMachine[this.i])
       if (!currentMachine) {
