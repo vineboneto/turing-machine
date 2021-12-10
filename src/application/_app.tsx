@@ -1,9 +1,9 @@
-import { useState, ChangeEvent, FormEvent } from 'react'
-import { TuringMachine, TuringMachineProps } from './components'
+import { useState, ChangeEvent, FormEvent, Fragment } from 'react'
+import { TuringMachine as Contract } from '../domain/contracts'
+import { TuringMachine } from './components'
 import { Wrapper, GlobalStyle } from './styles'
 
 const defaultState = {
-  m: '',
   Q: '',
   turingMachines: [
     {
@@ -13,7 +13,7 @@ const defaultState = {
       write: '',
       direction: '',
     },
-  ] as TuringMachineProps[],
+  ] as Contract.TuringMachine[],
   alphaInput: '',
   inputMachine: '',
   finalState: '',
@@ -21,12 +21,26 @@ const defaultState = {
   output: '',
 }
 
-export default function App() {
+type Props = {
+  turingMachine: Contract
+}
+
+export default function App({ turingMachine }: Props) {
   const [state, setState] = useState(defaultState)
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(state.turingMachines)
+    try {
+      const output = await turingMachine.resolve({
+        final: state.finalState,
+        initial: state.initialState,
+        inputMachine: state.inputMachine,
+        turingMachines: state.turingMachines,
+      })
+      setState((old) => ({ ...old, output }))
+    } catch (err: any) {
+      setState((old) => ({ ...old, output: err.message }))
+    }
   }
 
   const textChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +96,6 @@ export default function App() {
         <div className="main-form">
           <div className="left-form">
             <h2 className="title">Valores de Entrada</h2>
-            <input type="text" placeholder="M" name="m" title="M" value={state.m} onChange={textChange} />
             <input
               type="text"
               placeholder="Q"
@@ -140,14 +153,14 @@ export default function App() {
           <div className="right-form">
             <h2 className="title">Máquina de Turing</h2>
             {state.turingMachines.map((e, index, array) => (
-              <>
-                <TuringMachine key={index} turingMachine={e} textChange={textChangeTuringMachine(index)} />
+              <Fragment key={index}>
+                <TuringMachine turingMachine={e} textChange={textChangeTuringMachine(index)} />
                 {index !== array.length - 1 && (
                   <button type="button" onClick={() => removeTuringMachine(index)}>
                     x
                   </button>
                 )}
-              </>
+              </Fragment>
             ))}
             <button type="button" onClick={addTuringMachine}>
               +

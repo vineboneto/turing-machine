@@ -1,15 +1,8 @@
 import { ChangeEvent } from 'react'
-
-export type TuringMachineProps = {
-  current: string
-  next: string
-  read: string
-  write: string
-  direction: string
-}
+import { TuringMachine as Contract } from '../../domain/contracts'
 
 type Props = {
-  turingMachine: TuringMachineProps
+  turingMachine: Contract.TuringMachine
   textChange(e: ChangeEvent<HTMLInputElement>): void
 }
 
