@@ -1,4 +1,4 @@
-import { TuringMachineUseCase } from '../use-cases'
+import { TuringMachineUseCase } from '@/use-cases'
 
 export const makeTuringMachine = (state): TuringMachineUseCase => {
   const turingMachine = new TuringMachineUseCase(

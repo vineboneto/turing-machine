@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react'
-import { TuringMachine } from '../use-cases'
+import { TuringMachine } from '@/use-cases'
 
 type Props = {
   turingMachine: TuringMachine

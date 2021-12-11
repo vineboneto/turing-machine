@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent, Fragment } from 'react'
-import { TuringMachine } from './use-cases'
-import { makeTuringMachine } from './factories'
-import { TuringMachineTodo } from './components'
+import { TuringMachine } from '@/use-cases'
+import { makeTuringMachine } from '@/factories'
+import { TuringMachineTodo } from '@/components'
 import { Wrapper, GlobalStyle } from './styles'
 
 export const defaultState = {
