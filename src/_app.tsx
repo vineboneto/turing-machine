@@ -1,9 +1,10 @@
 import { useState, ChangeEvent, FormEvent, Fragment } from 'react'
-import { TuringMachine as Contract } from '../domain/contracts'
-import { TuringMachine } from './components'
+import { TuringMachine } from './use-cases'
+import { makeTuringMachine } from './factories'
+import { TuringMachineTodo } from './components'
 import { Wrapper, GlobalStyle } from './styles'
 
-const defaultState = {
+export const defaultState = {
   Q: '',
   turingMachines: [
     {
@@ -13,7 +14,7 @@ const defaultState = {
       write: '',
       direction: '',
     },
-  ] as Contract.TuringMachine[],
+  ] as TuringMachine[],
   alphaInput: '',
   inputMachine: '',
   finalState: '',
@@ -22,25 +23,15 @@ const defaultState = {
   output: '',
 }
 
-type Props = {
-  turingMachine: Contract
-}
-
-export default function App({ turingMachine }: Props) {
+export default function App() {
   const [state, setState] = useState(defaultState)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      const output = await turingMachine.resolve({
-        initial: state.initialState,
-        inputMachine: state.inputMachine,
-        turingMachines: state.turingMachines,
-        blank: state.blank,
-        final: state.finalState.split(',').map((e) => e.trim()),
-        Q: state.Q.split(',').map((e) => e.trim()),
-        alphaInput: state.alphaInput.split(',').map((e) => e.trim()),
-      })
+      const turingMachine = makeTuringMachine(state)
+      const output = await turingMachine.resolve()
+      console.log(output)
       setState((old) => ({ ...old, output }))
     } catch (err: any) {
       setState((old) => ({ ...old, output: err.message }))
@@ -167,7 +158,7 @@ export default function App({ turingMachine }: Props) {
             <h2 className="title">Máquina de Turing δ</h2>
             {state.turingMachines.map((e, index, array) => (
               <Fragment key={index}>
-                <TuringMachine turingMachine={e} textChange={textChangeTuringMachine(index)} />
+                <TuringMachineTodo turingMachine={e} textChange={textChangeTuringMachine(index)} />
                 {index !== array.length - 1 && (
                   <button type="button" onClick={() => removeTuringMachine(index)}>
                     x

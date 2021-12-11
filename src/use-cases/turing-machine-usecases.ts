@@ -1,19 +1,41 @@
-import { TuringMachine as Contract } from '../contracts'
+export interface Contract {
+  resolve(): Promise<string>
+}
+
+export type Input = {
+  initial: string
+  final: string[]
+  inputMachine: string
+  turingMachines: TuringMachine[]
+  Q: string[]
+  alphaInput: string[]
+  blank: string
+}
+
+export type TuringMachine = {
+  current: string
+  next: string
+  read: string
+  write: string
+  direction: 'R' | 'L' | 'S' | ''
+}
 
 export class TuringMachineUseCase implements Contract {
-  private inputMachine: string
-  private currentState: string
-  private final: string[]
-  private turingMachines: Contract.TuringMachine[]
   private incrementI = 1
   private i = 0
-  private Q: string[]
-  private alphaInput: string[]
-  private blank: string
 
-  async resolve(input: Contract.Input): Promise<string> {
-    this.setting(input)
-    this.validation()
+  constructor(
+    private inputMachine: string,
+    private turingMachines: TuringMachine[],
+    private currentState: string,
+    private final: string[],
+    private Q: string[],
+    private alphaInput: string[],
+    private blank: string
+  ) {}
+
+  async resolve(): Promise<string> {
+    this.validationFields()
     for (this.i; this.i < this.inputMachine.length; this.i += this.incrementI) {
       const currentMachine = this.getMachineByLetter(this.inputMachine[this.i])
       if (!currentMachine) {
@@ -21,14 +43,13 @@ export class TuringMachineUseCase implements Contract {
       }
       this.changeToNextMachine(currentMachine)
       this.resolveDirection(currentMachine.direction)
-      console.log(this.isFinalState())
       if (this.isFinalState()) {
         return this.inputMachine
       }
     }
   }
 
-  private validation() {
+  private validationFields() {
     if (!this.Q?.length || !this.alphaInput?.length || !this.final || !this.currentState || !this.inputMachine) {
       throw new Error('Preencha todos os campos')
     }
@@ -75,18 +96,6 @@ export class TuringMachineUseCase implements Contract {
     return exist?.length > 0
   }
 
-  private setting(input: Contract.Input) {
-    this.currentState = input.initial
-    this.final = input.final
-    this.turingMachines = input.turingMachines
-    this.inputMachine = input.inputMachine
-    this.Q = input.Q
-    this.alphaInput = input.alphaInput
-    this.blank = input.blank
-    this.i = 0
-    this.incrementI = 1
-  }
-
   private resolveDirection(nextDirection: string) {
     switch (nextDirection) {
       case 'R':
@@ -103,7 +112,7 @@ export class TuringMachineUseCase implements Contract {
     }
   }
 
-  private changeToNextMachine(currentMachine: Contract.TuringMachine) {
+  private changeToNextMachine(currentMachine: TuringMachine) {
     this.inputMachine = this.replaceAt(this.inputMachine, currentMachine.write, this.i)
     this.currentState = currentMachine.next
   }
@@ -122,13 +131,13 @@ export class TuringMachineUseCase implements Contract {
   private changeValueToLeft() {
     if (!this.inputMachine[this.i - 1]) {
       this.incrementI = 0
+      this.inputMachine = this.blank + this.inputMachine
     } else {
       this.incrementI = -1
     }
-    this.inputMachine = this.blank + this.inputMachine
   }
 
-  private getMachineByLetter(letter: string): Contract.TuringMachine {
+  private getMachineByLetter(letter: string): TuringMachine {
     for (const machine of this.turingMachines) {
       if (letter === machine.read && this.currentState === machine.current) {
         return machine

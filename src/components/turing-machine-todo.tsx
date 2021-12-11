@@ -1,12 +1,12 @@
 import { ChangeEvent } from 'react'
-import { TuringMachine as Contract } from '../../domain/contracts'
+import { TuringMachine } from '../use-cases'
 
 type Props = {
-  turingMachine: Contract.TuringMachine
+  turingMachine: TuringMachine
   textChange(e: ChangeEvent<HTMLInputElement>): void
 }
 
-export default function TuringMachine({ turingMachine, textChange }: Props) {
+export default function TuringMachineTodo({ turingMachine, textChange }: Props) {
   return (
     <span>
       <input
