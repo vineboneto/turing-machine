@@ -1,4 +1,6 @@
 import { useState, ChangeEvent, FormEvent, Fragment } from 'react'
+import { HiPlus } from 'react-icons/hi'
+import { AiOutlineClose } from 'react-icons/ai'
 import { TuringMachine } from '@/use-cases'
 import { makeTuringMachine } from '@/factories'
 import { TuringMachineTodo } from '@/components'
@@ -161,13 +163,13 @@ export default function App() {
                 <TuringMachineTodo turingMachine={e} textChange={textChangeTuringMachine(index)} />
                 {index !== array.length - 1 && (
                   <button type="button" onClick={() => removeTuringMachine(index)}>
-                    x
+                    <AiOutlineClose />
                   </button>
                 )}
               </Fragment>
             ))}
             <button type="button" onClick={addTuringMachine}>
-              +
+              <HiPlus />
             </button>
           </div>
         </div>
